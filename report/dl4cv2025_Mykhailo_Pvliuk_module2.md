@@ -2,8 +2,8 @@
 
 |          |          |
 |----------|----------|
-|Start Date|YYYY-MM-DD|
-|End Date  |YYYY-MM-DD|
+|Start Date|2025-11-13|
+|End Date  |2025-11-15|
 |Dataset   |CIFAR-10|
 |Author    |Mykhailo Pavliuk|
 
@@ -16,9 +16,10 @@ Conduct systematic experiments on CIFAR-10 to compare:
 4. Fine-tuning strategies with DINOv3-large:
    - Head-only training
    - Partial unfreezing (last 4 layers)
-   - Full fine-tuning
 
 The goal is to understand the trade-offs between model complexity, training time, and accuracy, and to determine the most effective approach for CIFAR-10 classification.
+
+All experiments were ran on google collab pro A100 GPU
 
 ---
 
@@ -26,10 +27,9 @@ The goal is to understand the trade-offs between model complexity, training time
 
 |          |          |
 |----------|----------|
-|Start Date|YYYY-MM-DD|
-|End Date  |YYYY-MM-DD|
+|Start Date|2025-11-13|
+|End Date  |2025-11-13|
 |Dataset   |CIFAR-10|
-|New       |yes|
 
 ## Architecture
 
@@ -46,7 +46,7 @@ Dropout (0.5) applied in classifier.
 
 ```
 Batch size: 128
-Epochs: 50
+Epochs: 5
 Learning rate: 0.001
 Optimizer: Adam
 Data augmentation: RandomCrop(32, padding=4), RandomHorizontalFlip
@@ -54,11 +54,11 @@ Data augmentation: RandomCrop(32, padding=4), RandomHorizontalFlip
 
 ## Results & Deliverables
 
-**Training time**: ___ minutes (___s per epoch)
-**Best validation accuracy**: __.___%
-**Final train accuracy**: __.___%
-**Total parameters**: ___,___
-**Trainable parameters**: ___,___
+**Training time**: 30 seconds per epoch
+**Best validation accuracy**: 72.52%
+**Final train accuracy**: 72.62%
+**Total parameters**: 3,249,994
+**Trainable parameters**: 3,249,994
 
 ## Training Curves
 
@@ -66,10 +66,7 @@ Data augmentation: RandomCrop(32, padding=4), RandomHorizontalFlip
 
 ## Interpretation & Conclusion
 
-[FILL IN AFTER RUNNING]
-- How quickly did the model converge?
-- Signs of overfitting?
-- Comparison expectations with transfer learning approaches
+Just a quick baseline CNN to get started: not very good accuracy, but quick to train. I hope to achieve a lot better results with transfer learning for Dino models.
 
 ---
 
@@ -77,10 +74,9 @@ Data augmentation: RandomCrop(32, padding=4), RandomHorizontalFlip
 
 |          |          |
 |----------|----------|
-|Start Date|YYYY-MM-DD|
-|End Date  |YYYY-MM-DD|
+|Start Date|2025-11-13|
+|End Date  |2025-11-13|
 |Dataset   |CIFAR-10|
-|Continues |e0001|
 
 ## Architecture
 
@@ -94,8 +90,8 @@ Data augmentation: RandomCrop(32, padding=4), RandomHorizontalFlip
 ## Hyperparameters
 
 ```
-Batch size: 64 (reduced due to 224×224 inputs)
-Epochs: 20
+Batch size: 256
+Epochs: 5
 Learning rate: 0.001
 Optimizer: Adam
 Preprocessing: Resize to 224, ImageNet normalization
@@ -103,10 +99,10 @@ Preprocessing: Resize to 224, ImageNet normalization
 
 ## Results & Deliverables
 
-**Training time**: ___ minutes (___s per epoch)
-**Best validation accuracy**: __.___%
-**Final train accuracy**: __.___%
-**Total parameters**: ___,___ (___,___ trainable)
+**Training time**: 38 minutes (457s per epoch)
+**Best validation accuracy**: 97.99%
+**Final train accuracy**: 98.68%
+**Total parameters**: 86,059,274 (398,858 trainable)
 
 ## Training Curves
 
@@ -114,10 +110,7 @@ Preprocessing: Resize to 224, ImageNet normalization
 
 ## Interpretation & Conclusion
 
-[FILL IN AFTER RUNNING]
-- Comparison with baseline CNN
-- Impact of frozen features vs training from scratch
-- Does pretrained DINOv3 knowledge transfer to CIFAR-10?
+We can see that pre-trained base model already performs very good on this dataset, and I expected bigger gap between training and vlidation, to be honest. I can also see that the model plateaus almosti mmediately and signs of overfitting. Maybe freezing some features can give us better result, and maybe try large model.
 
 ---
 
@@ -125,8 +118,8 @@ Preprocessing: Resize to 224, ImageNet normalization
 
 |          |          |
 |----------|----------|
-|Start Date|YYYY-MM-DD|
-|End Date  |YYYY-MM-DD|
+|Start Date|2025-11-14|
+|End Date  |2025-11-14|
 |Dataset   |CIFAR-10|
 |Continues |e0002|
 
@@ -142,18 +135,18 @@ Preprocessing: Resize to 224, ImageNet normalization
 ## Hyperparameters
 
 ```
-Batch size: 64
-Epochs: 20
+Batch size: 256
+Epochs: 5
 Learning rate: 0.001
 Optimizer: Adam
 ```
 
 ## Results & Deliverables
 
-**Training time**: ___ minutes (___s per epoch)
-**Best validation accuracy**: __.___%
-**Final train accuracy**: __.___%
-**Total parameters**: ___,___ (___,___ trainable)
+**Training time**: 104 minutes (1256s per epoch)
+**Best validation accuracy**: 99.08%
+**Final train accuracy**: 99.52%
+**Total parameters**: 303,659,530 (529,930 trainable)
 
 ## Training Curves
 
@@ -161,10 +154,7 @@ Optimizer: Adam
 
 ## Interpretation & Conclusion
 
-[FILL IN AFTER RUNNING]
-- Does larger model improve accuracy?
-- Training time comparison with DINOv3-base
-- Is the improvement worth the computational cost?
+Larger model improved accuracy, and I think it's worth the computational and time trade off. It also shows that it is overfitting and it converged immediately, but I don't think ti can get better than this accuracy. I will still ttry to fine tune it bu running training with all layers except head frozen and also once partially unfreezing.
 
 ---
 
@@ -172,17 +162,16 @@ Optimizer: Adam
 
 |          |          |
 |----------|----------|
-|Start Date|YYYY-MM-DD|
-|End Date  |YYYY-MM-DD|
+|Start Date|2025-11-14|
+|End Date  |2025-11-14|
 |Dataset   |CIFAR-10|
 |Continues |e0003|
 
 ## Experiments Overview
 
-Three fine-tuning strategies:
+Two fine-tuning strategies:
 - **e0004a**: Train classifier head only (warmup)
 - **e0004b**: Unfreeze last 4 transformer layers
-- **e0004c**: Full model fine-tuning
 
 ---
 
@@ -192,13 +181,13 @@ Three fine-tuning strategies:
 ```
 Backbone: FROZEN
 Classifier: TRAINABLE
-Epochs: 15
+Epochs: 5
 Learning rate: 0.001
 ```
 
 ### Results
-**Best validation accuracy**: __.___%
-**Training time**: ___ minutes
+**Best validation accuracy**: 98.97%
+**Training time**: 104 minutes
 
 ![Loss vs Epoch](e0004a_dinov3_large_head_metrics.png)
 
@@ -210,7 +199,7 @@ Learning rate: 0.001
 ```
 Backbone: Last 4 layers UNFROZEN
 Classifier: TRAINABLE
-Epochs: 15
+Epochs: 5
 Learning rate: 0.0001 (reduced for stability)
 Starting from: e0004a checkpoint
 ```
@@ -221,34 +210,13 @@ Starting from: e0004a checkpoint
 
 ![Loss vs Epoch](e0004b_dinov3_large_partial_metrics.png)
 
----
-
-## [e0004c] Full Fine-tuning
-
-### Configuration
-```
-Backbone: FULLY UNFROZEN
-Classifier: TRAINABLE
-Epochs: 10
-Learning rate: 0.00001 (very low to prevent catastrophic forgetting)
-Starting from: Fresh model
-```
-
-### Results
-**Best validation accuracy**: __.___%
-**Training time**: ___ minutes
-
-![Loss vs Epoch](e0004c_dinov3_large_full_metrics.png)
-
----
 
 ## Fine-tuning Strategy Comparison
 
 | Experiment |     Strategy    | Val Acc | Training Time | Trainable Params |
 |------------|-----------------|---------|---------------|------------------|
-| e0004a     | Head only       | __.__% | ___ min       | ___,___         |
-| e0004b     | Last 4 layers   | __.__% | ___ min       | ___,___         |
-| e0004c     | Full model      | __.__% | ___ min       | ___,___         |
+| e0004a     | Head only       | 98.97% | 104 min       | 529,930         | 
+| e0004b     | Last 4 layers   | 99.32% | 125 min       | 50,918,922         |
 
 ## Interpretation & Conclusion
 
@@ -271,7 +239,6 @@ Starting from: Fresh model
 | e0003      | DINOv3-large (frozen) | __.__% | ___ min | ___,___ | ___,___ |
 | e0004a     | DINOv3-large (head) | __.__% | ___ min | ___,___ | ___,___ |
 | e0004b     | DINOv3-large (partial) | __.__% | ___ min | ___,___ | ___,___ |
-| e0004c     | DINOv3-large (full) | __.__% | ___ min | ___,___ | ___,___ |
 
 ## Comparison Charts
 
@@ -301,26 +268,6 @@ Starting from: Fresh model
 2. For best accuracy: _______
 3. For production deployment: _______
 
-## Observations
-
-### Training Dynamics
-[FILL IN]
-- Convergence speed comparison
-- Overfitting patterns
-- Impact of learning rate
-
-### Architecture Insights
-[FILL IN]
-- CNN vs Transformer features
-- Small vs large pretrained models
-- Frozen vs fine-tuned approaches
-
-### Dataset Considerations
-[FILL IN]
-- Impact of upsampling 32×32 → 224×224
-- Does CIFAR-10 benefit from ImageNet pretraining?
-- Are 224×224 inputs necessary or overkill?
-
 ## Conclusions
 
 [FILL IN AFTER RUNNING]
@@ -331,41 +278,9 @@ Starting from: Fresh model
 3. _______
 
 **Future work**:
-- Try DINOv3-small for faster training
-- Experiment with different input sizes
-- Test on other datasets (DTD, etc.)
-- Implement progressive unfreezing strategy
+- Try DINOv3-small for faster training and do a full fine-tune
+- Increase drop-out
 - Try different augmentation strategies
 
 ---
 
-## Appendix: Experimental Details
-
-### System Configuration
-- GPU: _______
-- CUDA version: _______
-- PyTorch version: _______
-- Transformers version: _______
-
-### Data Preprocessing
-**Training transforms**:
-- RandomCrop(32, padding=4) [for CNN]
-- Resize(224) + RandomCrop(224, padding=28) [for DINOv3]
-- RandomHorizontalFlip
-- Normalization (dataset-specific)
-
-**Test transforms**:
-- Resize(224) [for DINOv3]
-- Normalization only
-
-### Reproducibility
-- Random seed: 42
-- PyTorch deterministic: True
-- Code version: _______
-- Experiment tracking: JSON files + plots
-
----
-
-**Report generated**: YYYY-MM-DD
-**Total experiments**: 6
-**Total training time**: ___ hours
