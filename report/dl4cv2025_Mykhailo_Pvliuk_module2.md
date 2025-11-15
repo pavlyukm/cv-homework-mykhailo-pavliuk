@@ -205,8 +205,8 @@ Starting from: e0004a checkpoint
 ```
 
 ### Results
-**Best validation accuracy**: __.___%
-**Training time**: ___ minutes
+**Best validation accuracy**: 99.32%%
+**Training time**: 229 minutes
 
 ![Loss vs Epoch](e0004b_dinov3_large_partial_metrics.png)
 
@@ -234,11 +234,12 @@ Starting from: e0004a checkpoint
 
 | Experiment | Description | Val Acc | Train Time | Total Params | Trainable Params |
 |------------|-------------|---------|------------|--------------|------------------|
-| e0001      | Baseline CNN | __.__% | ___ min   | ___,___     | ___,___         |
-| e0002      | DINOv3-base (frozen) | __.__% | ___ min | ___,___ | ___,___ |
-| e0003      | DINOv3-large (frozen) | __.__% | ___ min | ___,___ | ___,___ |
-| e0004a     | DINOv3-large (head) | __.__% | ___ min | ___,___ | ___,___ |
-| e0004b     | DINOv3-large (partial) | __.__% | ___ min | ___,___ | ___,___ |
+| e0001      | Baseline CNN | 72.52% | 2.6 min   | 3,249,994      | 3,249,994       |
+| e0002      | DINOv3-base (frozen) | 97.99% | 38 min |86,059,274 | 398,858 |
+| e0003      | DINOv3-large (frozen) | 99.08% | 104 min | 303,659,530 | 529,930 |
+| e0004a     | DINOv3-large (head) | 98.97% | 104 min | 303,659,530 | 529,930 |
+| e0004b     | DINOv3-large (partial) | 99.32% | 125 min | 303,659,530 | 50,918,922  |
+
 
 ## Comparison Charts
 
@@ -246,36 +247,28 @@ Starting from: e0004a checkpoint
 
 ## Key Findings
 
-[FILL IN AFTER RUNNING]
-
 ### Best Overall Model
-**Winner**: _______
-**Accuracy**: __.___%
-**Justification**: _______
+**Winner**: e0004b (DINOv3-large with last 4 layers unfrozen)
+**Accuracy**: 99.32%
+**Justification**: Achieved highest validation accuracy by allowing the model to adapt high-level features to CIFAR-10 while maintaining the powerful low-level representations from pretraining.
 
 ### Efficiency vs Accuracy
-- Most efficient (accuracy/time): _______
-- Best accuracy regardless of cost: _______
-- Best for production deployment: _______
+- Most efficient (accuracy/time): e0002 (DINOv3-base frozen) - 97.99% in 38 min (2.58% per min)
+- Best accuracy regardless of cost: e0004b - 99.32%
 
 ### Transfer Learning Insights
-- Baseline CNN performance: __.___%
-- Best frozen features model: _______
-- Improvement from fine-tuning: +___._%
+- Baseline CNN performance: 72.52%
+- Best frozen features model: e0003 (99.08%)
+- Improvement from fine-tuning: +0.24%
+- Massive 26.56% improvement from baseline to frozen DINOv3-large shows the power of transfer learning
 
-### Recommendations
-1. For quick prototyping: _______
-2. For best accuracy: _______
-3. For production deployment: _______
 
 ## Conclusions
 
-[FILL IN AFTER RUNNING]
-
 **Main takeaways**:
-1. _______
-2. _______
-3. _______
+1. Transfer learning is extremely effective - Even frozen DINOv3 features achieve 99.08% on CIFAR-10, a 26.56% improvement over the baseline CNN, demonstrating that powerful pretrained models capture universal visual representations.
+2. Diminishing returns from fine-tuning - Fine-tuning only improved accuracy by 0.24% (from 99.08% to 99.32%) while adding 21 minutes of training time and significant complexity. For CIFAR-10, frozen features are nearly optimal.
+3. Model size matters more than fine-tuning strategy - The jump from DINOv3-base (97.99%) to DINOv3-large (99.08%) was +1.09%, while fine-tuning only added +0.24%. Larger pretrained models >> fine-tuning for this task.
 
 **Future work**:
 - Try DINOv3-small for faster training and do a full fine-tune
